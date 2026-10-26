@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#0b1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>山の天気まとめ</title>
+<style>
+  :root{
+    --bg:#0b1220; --card:#151f31; --card2:#1c2a41; --line:#26364f;
+    --fg:#e8eef8; --muted:#8fa3bd;
+    --A:#22c55e; --B:#f59e0b; --C:#ef4444;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif;}
+  body{padding-bottom:calc(78px + env(safe-area-inset-bottom));}
+  header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.94);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+    padding:calc(10px + env(safe-area-inset-top)) 14px 8px;}
+  .hrow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-size:16px;margin:0;font-weight:700;letter-spacing:.02em}
+  h1 span{color:var(--muted);font-weight:500;font-size:11px;margin-left:6px}
+  .btn{border:1px solid var(--line);background:var(--card);color:var(--fg);
+    border-radius:10px;padding:6px 10px;font-size:12px;display:flex;align-items:center;gap:4px}
+  .btn:active{background:var(--card2)}
+  .meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
+  .legend{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);margin-top:6px}
+  .legend span{display:inline-flex;align-items:center;gap:3px}
+  .legend img{height:15px;width:auto;display:block}
+  .chip{display:inline-flex;align-items:center;gap:4px;margin-left:auto;text-decoration:none;
+    color:#bfdbfe;background:rgba(37,99,235,.16);border:1px solid rgba(59,130,246,.45);
+    border-radius:999px;padding:3px 9px 3px 7px;font-size:10.5px;line-height:1.3;white-space:nowrap}
+  .chip:active{background:rgba(37,99,235,.3)}
+  .chip svg{flex:0 0 auto}
+
+  .wrap{padding:10px 10px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed}
+  thead th{position:sticky;top:0;background:var(--bg);font-weight:600;font-size:9.5px;
+    color:var(--muted);padding:3px 0;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+  thead th.name{text-align:left;padding-left:5px;position:sticky;left:0;z-index:6;background:var(--bg);width:92px}
+  thead th.today{color:#93c5fd}
+  tbody td{border-bottom:1px solid rgba(38,54,79,.6);padding:5px 0;text-align:center}
+  td.name{text-align:left;position:sticky;left:0;background:var(--bg);z-index:5;
+    padding:7px 4px 7px 2px;border-right:1px solid var(--line);width:92px;max-width:92px}
+  .mname{font-size:11px;font-weight:700;line-height:1.2;display:-webkit-box;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:88px}
+  .msub{font-size:9px;color:var(--muted);display:block;margin-top:1px}
+  .cell{cursor:pointer}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:27px;height:24px}
+  .badge img{width:27px;height:auto;display:block}
+  .bN{background:#2b3a52;color:var(--muted);font-size:11px;border-radius:7px;width:24px;height:24px}
+  .tmp{display:block;font-size:9px;color:var(--muted);margin-top:2px;line-height:1}
+  tr.err td{color:var(--C);font-size:11px}
+
+  .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
+  footer{text-align:center;font-size:10px;color:var(--muted);padding:14px 20px 4px;line-height:1.6}
+
+  .fabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:8px;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:linear-gradient(to top,rgba(11,18,32,.98),rgba(11,18,32,.75) 70%,transparent)}
+  .fab{flex:1;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:700;
+    background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px}
+  .fab.ghost{background:var(--card);color:var(--fg);border:1px solid var(--line);flex:0 0 auto;padding:13px 16px}
+
+  .sheet{position:fixed;inset:0;z-index:50;display:none;background:rgba(4,8,16,.6)}
+  .sheet.on{display:block}
+  .panel{position:absolute;inset:auto 0 0 0;max-height:88vh;background:var(--bg);
+    border-radius:18px 18px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;
+    animation:up .18s ease-out}
+  @keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
+  .ph{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;gap:10px}
+  .ph b{font-size:14px}
+  .ph .x{background:none;border:none;color:var(--muted);font-size:22px;line-height:1;padding:0 4px}
+  .search{padding:0 14px 10px}
+  .search input{width:100%;padding:11px 12px;border-radius:11px;border:1px solid var(--line);
+    background:var(--card);color:var(--fg);font-size:15px;outline:none}
+  .search input::placeholder{color:#5f7a9c}
+  .results{overflow-y:auto;padding:0 8px 24px}
+  .ritem{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 10px;border-bottom:1px solid rgba(38,54,79,.5)}
+  .ritem .nm{font-size:13.5px}
+  .ritem .rg{font-size:10px;color:var(--muted)}
+  .add{background:#1d4ed8;border:none;color:#fff;border-radius:9px;padding:7px 12px;font-size:12.5px}
+  .add.on{background:#243a5c;color:var(--muted)}
+
+  .detail{padding:0 16px 26px;overflow-y:auto}
+  .dtitle{font-size:17px;font-weight:800}
+  .dsub{font-size:11.5px;color:var(--muted);margin:2px 0 12px}
+  .dday{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+  .dtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .ddate{font-size:12.5px;font-weight:700}
+  .dvals{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6}
+  .hours{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
+  .hz{font-size:9.5px;color:var(--muted);text-align:center;width:34px}
+  .hz b{display:block;font-size:10px;color:var(--fg);margin-bottom:2px}
+  .link{display:block;text-align:center;margin-top:8px;font-size:12px;color:#93c5fd;text-decoration:none}
+  .delrow{display:flex;justify-content:flex-end;margin-top:6px}
+  .del{background:none;border:1px solid #7f1d1d;color:#fca5a5;border-radius:9px;padding:6px 12px;font-size:12px}
+  .spin{padding:34px;text-align:center;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+<header>
+  <div class="hrow">
+    <h1>山の天気まとめ<span>tenkura</span></h1>
+    <div style="display:flex;gap:6px">
+      <button class="btn" id="sortBtn">指数順</button>
+      <button class="btn" id="reloadBtn">更新</button>
+    </div>
+  </div>
+  <div class="meta"><span id="updated">—</span><span id="srcnote">データ元: てんきとくらす（登山指数A〜C）</span>
+    <a class="chip" href="https://weathernews.jp/onebox/radar/" target="_blank" rel="noopener"
+       title="ウェザーニュース 雨雲レーダー（60時間予想）">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M17.5 14.5a4.5 4.5 0 0 0-.9-8.9 6 6 0 0 0-11.4 1.7A4 4 0 0 0 6.2 14.5"/>
+        <path d="M8 18.5l-1 2.5M12.2 18.5l-1 2.5M16.4 18.5l-1 2.5"/>
+      </svg>雨雲レーダー</a>
+  </div>
+  <div class="legend">
+    <span><img src="/img/mnt1.gif" alt="A">適</span>
+    <span><img src="/img/mnt2.gif" alt="B">やや不適</span>
+    <span><img src="/img/mnt3.gif" alt="C">不適</span>
+    <span style="margin-left:auto">日中(6-15時)の最悪値</span>
+  </div>
+</header>
+
+<div class="wrap">
+  <table id="tbl">
+    <thead><tr id="head"></tr></thead>
+    <tbody id="body"><tr><td class="spin">読み込み中…</td></tr></tbody>
+  </table>
+</div>
+<footer>
+  登山指数は山頂付近の気象から算出された目安です。実際の天候とは異なる場合があります。<br>
+  数値はてんきとくらすのページから取得しています（10分キャッシュ）。
+</footer>
+
+<div class="fabbar">
+  <button class="fab" id="addBtn" style="display:none">＋ 山を追加</button>
+</div>
+
+<div class="sheet" id="searchSheet">
+  <div class="panel">
+    <div class="ph"><b>山を追加（全国3,015座）</b><button class="x" data-close>×</button></div>
+    <div class="search"><input id="q" placeholder="山名で検索（例: 立山 / 白山 / 白馬）" autocomplete="off"></div>
+    <div class="results" id="results"></div>
+  </div>
+</div>
+
+<div class="sheet" id="detailSheet">
+  <div class="panel">
+    <div class="ph"><b id="dTitle">—</b><button class="x" data-close>×</button></div>
+    <div class="detail" id="detail"></div>
+  </div>
+</div>
+
+<script>
+const LS_KEY = 'yama.list.v2';
+const LEGACY_KEY = 'yama.list.v1';
+// 劔岳→妙高山、富士山山頂→八ヶ岳 に差し替え（旧リストを引き継ぐとき用）
+const SWAP = {
+  '16150008': {code:'15150005', name:'妙高山'},
+  '19150004': {code:'20150018', name:'八ヶ岳'}
+};
+const DEFAULTS = [
+  {code:'16150013', name:'立山'},
+  {code:'17150001', name:'御前峰（白山）'},
+  {code:'20150019', name:'白馬岳'},
+  {code:'20150022', name:'槍ヶ岳'},
+  {code:'15150005', name:'妙高山'},
+  {code:'20150018', name:'八ヶ岳'}
+];
+let mylist = [];
+let master = [];
+let data = null;
+let sortByIndex = false;
+
+const $ = id => document.getElementById(id);
+const load = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)) || null } catch(e){ return null } };
+const save = () => localStorage.setItem(LS_KEY, JSON.stringify(mylist));
+const RANK = {A:3,B:2,C:1};
+const fmtT = iso => { const d = new Date(iso); return d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}); };
+
+function initialList(){
+  const cur = load();
+  if(cur) return cur;
+  let old = null;
+  try { old = JSON.parse(localStorage.getItem(LEGACY_KEY)) } catch(e){}
+  if(Array.isArray(old) && old.length){
+    const seen = new Set(); const out = [];
+    for(const x of old){
+      const y = SWAP[x.code] || x;
+      if(y && y.code && !seen.has(y.code)){ seen.add(y.code); out.push({code:y.code, name:y.name}); }
+    }
+    if(out.length) return out;
+  }
+  return DEFAULTS.slice();
+}
+mylist = initialList();
+save();
+
+const ICON = {A:'img/mnt1.gif', B:'img/mnt2.gif', C:'img/mnt3.gif'};
+function badge(idx){
+  if(!idx || !ICON[idx]) return '<span class="badge bN">−</span>';
+  return `<span class="badge"><img src="${ICON[idx]}" alt="${idx}指数" loading="lazy"></span>`;
+}
+function tempLabel(v){
+  if(v===null||v===undefined) return '';
+  return `${Math.round(v)}°`;
+}
+
+function columns(){
+  if(!data) return [];
+  const seen = new Set(); const cols = [];
+  for(const m of data.mountains){
+    for(const d of (m.days||[])){
+      if(!seen.has(d.date)){ seen.add(d.date); cols.push(d.date); }
+    }
+  }
+  // どの山も指数・気温が未発表の日（先の予報枠）は列ごと落とす
+  const useful = cols.filter(c => (data.mountains||[]).some(m=>{
+    const d = (m.days||[]).find(x=>x.date===c);
+    return d && (d.index || d.temp_max!==null && d.temp_max!==undefined);
+  }));
+  return (useful.length ? useful : cols).slice(0,8);
+}
+
+function render(){
+  const cols = columns();
+  const head = $('head');
+  const labels = ['今日','明日','明後日','3日後','4日後','5日後','6日後','7日後'];
+  head.innerHTML = '<th class="name">山</th>' + cols.map((c,i)=>
+    `<th class="${i===0?'today':''}">${labels[i]||''}<br><span style="font-weight:400">${c.replace(/\(.\)/,'')}</span></th>`
+  ).join('');
+
+  let ms = (data?.mountains || []).slice();
+  if(sortByIndex){
+    ms.sort((a,b)=>{
+      const ai = a.days?.[0]?.index, bi = b.days?.[0]?.index;
+      return (RANK[bi]||0) - (RANK[ai]||0);
+    });
+  }
+  const body = $('body');
+  if(!ms.length){
+    body.innerHTML = '<tr><td colspan="9" class="empty">山が登録されていません。<br>「＋ 山を追加」から選んでください。</td></tr>';
+    return;
+  }
+  body.innerHTML = ms.map((m, mi)=>{
+    const byDate = {};
+    (m.days||[]).forEach(d=>{ byDate[d.date]=d });
+    const cells = cols.map(c=>{
+      const d = byDate[c];
+      if(m.error) return '<td>—</td>';
+      if(!d) return '<td>—</td>';
+      const t = d.temp_max!==null && d.temp_min!==null && d.temp_max!==d.temp_min
+        ? `${Math.round(d.temp_max)}/${Math.round(d.temp_min)}` : tempLabel(d.temp_max);
+      return `<td class="cell" data-i="${mi}" data-date="${c}">${badge(d.index)}<span class="tmp">${t}</span></td>`;
+    }).join('');
+    const alt = m.altitude ? `${m.altitude}m` : '';
+    return `<tr class="${m.error?'err':''}">
+      <td class="name"><span class="mname" data-i="${mi}">${m.name||m.code}</span><span class="msub">${alt}${m.error?' 取得失敗':''}</span></td>
+      ${cells}</tr>`;
+  }).join('');
+
+  document.querySelectorAll('.mname').forEach(el=>el.onclick=()=>openDetail(ms[+el.dataset.i]));
+  document.querySelectorAll('.cell').forEach(el=>el.onclick=()=>openDetail(ms[+el.dataset.i]));
+}
+
+function openDetail(m){
+  if(!m) return;
+  $('dTitle').textContent = m.name || m.code;
+  const alt = m.altitude? `${m.altitude}m付近` : '';
+  let html = `<div class="dsub">${m.name||''}　${alt}${m.municipality?' ／ 麓: '+m.municipality:''}</div>`;
+  if(m.error){ html += `<div class="dday">データを取得できませんでした（${m.error}）</div>`; }
+  (m.days||[]).forEach(d=>{
+    const hours = Object.entries(d.hours||{}).sort((a,b)=>parseInt(a[0],10)-parseInt(b[0],10))
+      .map(([h,i])=>`<span class="hz"><b>${h}時</b>${badge(i)}</span>`).join('');
+    const rain = m.rain?.[d.date];
+    html += `<div class="dday">
+      <div class="dtop"><span class="ddate">${d.date}</span>${badge(d.index)}</div>
+      <div class="dvals">
+        ${d.temp_max!==null?`気温 ${Math.round(d.temp_max)}${d.temp_min!==null&&d.temp_min!==d.temp_max?' 〜 '+Math.round(d.temp_min):''}℃`:''}
+        ${d.wind_max!==null?`　風 ${Math.round(d.wind_max)}m/s`:''}
+        ${rain!==undefined&&rain!==null?`　降水 ${rain}%`:''}
+      </div>
+      ${hours?`<div class="hours">${hours}</div>`:''}
+    </div>`;
+  });
+  html += `<a class="link" target="_blank" rel="noopener"
+      href="https://tenkura.n-kishou.co.jp/tk/kanko/kad.html?code=${m.code}&type=15&ba=${m.ba||'hr'}">てんきとくらすで詳しく見る ↗</a>
+    <div class="delrow"><button class="del" data-del="${m.code}">この山をリストから削除</button></div>`;
+  $('detail').innerHTML = html;
+  $('detail').querySelector('[data-del]').onclick = ()=>{
+    mylist = mylist.filter(x=>x.code!==m.code); save(); closeSheets(); fetchData();
+  };
+  $('detailSheet').classList.add('on');
+}
+
+function closeSheets(){ document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on')) }
+
+async function fetchData(){
+  $('body').innerHTML = '<tr><td class="spin">読み込み中…</td></tr>';
+  try{
+    // 静的版: 生成済みの data.json を読む（サーバー不要）
+    const r = await fetch('data.json?t='+Date.now(), {cache:'no-store'});
+    data = await r.json();
+    $('updated').textContent = '更新 ' + fmtT(data.at);
+    render();
+  }catch(e){
+    $('body').innerHTML = `<tr><td class="spin">読み込み失敗: ${e}</td></tr>`;
+  }
+}
+
+async function loadMaster(){
+  // 静的版: master は data.json に含まれる山だけ（固定リスト）
+  try{
+    const r = await fetch('data.json', {cache:'no-store'});
+    const j = await r.json();
+    master = (j.mountains||[]).map(m=>({code:m.code, name:m.name, region:m.region||'', ba:m.ba||'hr'}));
+  }catch(e){ master = []; }
+}
+
+function searchResults(q){
+  const box = $('results');
+  const s = q.trim();
+  let hits = s ? master.filter(m=>m.name.includes(s)) : master.slice(0,40);
+  hits = hits.slice(0,80);
+  box.innerHTML = hits.map(m=>{
+    const has = mylist.some(x=>x.code===m.code);
+    return `<div class="ritem"><div><div class="nm">${m.name}</div><div class="rg">${m.region||''}・${m.code}</div></div>
+      <button class="${has?'add on':'add'}" data-code="${m.code}" data-name="${m.name}">${has?'追加済':'追加'}</button></div>`;
+  }).join('') || '<div class="empty">該当なし</div>';
+  box.querySelectorAll('.add').forEach(b=>b.onclick=async()=>{
+    if(mylist.some(x=>x.code===b.dataset.code)) return;
+    mylist.push({code:b.dataset.code, name:b.dataset.name}); save();
+    b.textContent='追加済'; b.classList.add('on');
+    closeSheets(); await fetchData();
+  });
+}
+
+document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeSheets);
+document.querySelectorAll('.sheet').forEach(s=>s.addEventListener('click',e=>{ if(e.target===s) closeSheets() }));
+$('addBtn').onclick = ()=>{ $('searchSheet').classList.add('on'); $('q').value=''; searchResults(''); $('q').focus(); };
+$('q').oninput = e => searchResults(e.target.value);
+$('reloadBtn').onclick = async ()=>{
+  await fetch('/api/forecast?codes='+mylist.map(m=>m.code).join(',')+'&bust=1').catch(()=>{});
+  fetchData();
+};
+$('sortBtn').onclick = ()=>{ sortByIndex=!sortByIndex; $('sortBtn').textContent = sortByIndex?'指数順 ✓':'指数順'; render(); };
+
+(async ()=>{ await loadMaster(); await fetchData();
+  setInterval(fetchData, 10*60*1000);
+})();
+
+// PWA: service worker（オフラインでも最後のデータを表示）
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
