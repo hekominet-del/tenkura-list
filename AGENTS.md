@@ -74,10 +74,13 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
 ```json
 {"at": "2026-10-26T17:35:43+09:00",
  "mountains": [
-   {"code":"16150013","name":"立山","altitude":3015,"municipality":"立山町","ba":"hr","region":"北陸",
-    "days":[{"date":"10/26","label":"今 日 10/26(月)","index":"A",
-             "hours":{"18":"A","21":"A"},"temp_max":6,"temp_min":5,"wind_max":3}],
-    "rain":{"10/28(水":30},"fetched":"2026-10-26T17:35:41","stale":false}]}
+   {"code": "16150013", "name": "立山", "altitude": 3015, "municipality": "立山町",
+    "ba": "hr", "region": "北陸", "fetched": "2026-10-26T17:35:41", "stale": false,
+    "days": [{"date": "10/26", "label": "今 日 10/26(月)", "index": "A",
+              "hours": {"18": "A", "21": "A"},
+              "temp_max": 6, "temp_min": 5, "wind_max": 3}],
+    "rain": {"10/28(水)": 30}}
+ ]}
 ```
 
 ## 設計上の決め事（変えるときは理由を残す）
