@@ -8,6 +8,9 @@ import json
 import os
 import sys
 import time
+from datetime import datetime, timedelta, timezone
+
+JST = timezone(timedelta(hours=9))
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, ROOT)
@@ -86,7 +89,7 @@ def main():
         print("全山失敗のため data.json は更新しません", file=sys.stderr)
         return 1
 
-    payload = {"at": time.strftime("%Y-%m-%dT%H:%M:%S"), "mountains": out}
+    payload = {"at": datetime.now(JST).isoformat(timespec="seconds"), "mountains": out}
     copy_site()
     with open(DATA, "w", encoding="utf-8") as f:
         json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
