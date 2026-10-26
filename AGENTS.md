@@ -75,7 +75,8 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
 {"at": "2026-10-26T17:35:43+09:00",
  "mountains": [
    {"code": "16150013", "name": "立山", "altitude": 3015, "municipality": "立山町",
-    "ba": "hr", "region": "北陸", "fetched": "2026-10-26T17:35:41", "stale": false,
+    "ba": "hr", "region": "北陸", "jma": "1632300",
+    "fetched": "2026-10-26T17:35:41", "stale": false,
     "days": [{"date": "10/26", "label": "今 日 10/26(月)", "index": "A",
               "hours": {"18": "A", "21": "A"},
               "temp_max": 6, "temp_min": 5, "wind_max": 3}],
@@ -90,8 +91,10 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
   `https://tenkura.n-kishou.co.jp/tk/kanko/kad.html?code=16150013&type=15&ba=hr`
   `ba`: hk北海道 / th東北 / hr北陸 / kk関東・甲信 / tk東海 / kn近畿 / cg中国 / sk四国 / ks九州・沖縄
 - **時刻は必ずJSTオフセット付き**（`+09:00`）。ActionsはUTCなので naive な文字列にするとブラウザ側で9時間ずれる
+- **`jma` は気象庁の市町村予報エリアコード**（class20s）。`watchlist.json` に手で持たせ、`build.py` が data.json へ素通しする。詳細画面の「麓: ○○町 気象庁 ↗」はこれで `https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=<jma>` を開く。山の麓名（municipality）から引くときは `https://www.jma.go.jp/bosai/common/const/area.json` の `class20s` を名前一致で検索
 - **取得失敗時は前回データを引き継ぐ**（`stale: true`）。全山失敗なら data.json を更新せず exit 1
-- **アセットはすべて相対パス**。Pagesはサブパス（`/tenkura-list/`）配信なので `/icon.png` は404になる
+- **アセットはすべて相対パス**。Pagesはサブパス（`/tenkura-list/`）配信なので `/icon.png` は404になる（凡例アイコンを `/img/mnt1.gif` と書いて404にした実例あり。表内は `img/mnt1.gif` で正しかった）
+- **`web/index.html` を変えたら `web/sw.js` の `CACHE` を上げる**（`tenkura-v2` → `v3`）。SWはアプリ本体をキャッシュ優先で返すので、上げないとスマホのインストール済みPWAは古い画面のまま
 - **取得は1日5回まで**。非公式取得なので、増やす場合はサイト負荷とブロックリスクを天秤にかける
 
 ## ハマりどころ（実際に踏んだ）
@@ -104,7 +107,7 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
 ## 次にやると良いこと（候補）
 
 1. 山の並び替え・お気に入り固定（localStorageで完結）
-2. 詳細画面に雨雲レーダー / tenki.jp など外部リンク追加
+2. 詳細画面に tenki.jp / 山と高原地図 など外部リンク追加（雨雲レーダー・windy・気象庁は追加済み）
 3. 危険な山（指数C）だけTelegramに通知（Hermesのcronjobから data.json を読む）
 4. 週末だけ表示・「行く予定の山」モード
 5. watchlist編集をGitHub API経由でUIから（トークンが必要になるので慎重に）
@@ -112,3 +115,4 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
 ## 履歴
 
 - 2026-10-26: ローカル版（PC内サーバー）から GitHub Pages + Actions + PWA へ移行して公開。8山・1日5回更新で稼働中
+- 2026-10-26: ①凡例アイコンの404修正（絶対パス→相対パス）②雨雲レーダーを大きなボタンに ③windy（風・積雪）リンクを隣に追加 ④詳細画面の麓の横に気象庁リンク（jma コード導入）

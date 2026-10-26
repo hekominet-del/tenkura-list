@@ -32,11 +32,16 @@
   .legend{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);margin-top:6px}
   .legend span{display:inline-flex;align-items:center;gap:3px}
   .legend img{height:15px;width:auto;display:block}
-  .chip{display:inline-flex;align-items:center;gap:4px;margin-left:auto;text-decoration:none;
-    color:#bfdbfe;background:rgba(37,99,235,.16);border:1px solid rgba(59,130,246,.45);
-    border-radius:999px;padding:3px 9px 3px 7px;font-size:10.5px;line-height:1.3;white-space:nowrap}
-  .chip:active{background:rgba(37,99,235,.3)}
-  .chip svg{flex:0 0 auto}
+  .quick{display:flex;gap:8px;margin-top:9px}
+  .ql{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
+    background:var(--card);border:1px solid var(--line);color:var(--fg);
+    border-radius:12px;padding:9px 8px;font-size:13px;font-weight:700;line-height:1.2;white-space:nowrap}
+  .ql:active{transform:scale(.98)}
+  .ql svg{flex:0 0 auto;width:16px;height:16px}
+  .ql-primary{background:#1d4ed8;border-color:#3b82f6;color:#fff;
+    box-shadow:0 2px 10px rgba(37,99,235,.35);font-size:13.5px}
+  .ql-primary svg{width:18px;height:18px}
+  .lnk{color:#93c5fd;text-decoration:none;border-bottom:1px solid rgba(147,197,253,.55)}
 
   .wrap{padding:10px 10px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
   table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed}
@@ -113,19 +118,27 @@
       <button class="btn" id="reloadBtn">更新</button>
     </div>
   </div>
-  <div class="meta"><span id="updated">—</span><span id="srcnote">データ元: てんきとくらす（登山指数A〜C）</span>
-    <a class="chip" href="https://weathernews.jp/onebox/radar/" target="_blank" rel="noopener"
+  <div class="meta"><span id="updated">—</span><span id="srcnote">データ元: てんきとくらす（登山指数A〜C）</span></div>
+  <div class="quick">
+    <a class="ql ql-primary" href="https://weathernews.jp/onebox/radar/" target="_blank" rel="noopener"
        title="ウェザーニュース 雨雲レーダー（60時間予想）">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M17.5 14.5a4.5 4.5 0 0 0-.9-8.9 6 6 0 0 0-11.4 1.7A4 4 0 0 0 6.2 14.5"/>
         <path d="M8 18.5l-1 2.5M12.2 18.5l-1 2.5M16.4 18.5l-1 2.5"/>
-      </svg>雨雲レーダー</a>
+      </svg><span>雨雲レーダー</span></a>
+    <a class="ql" href="https://www.windy.com/?36.5,137.8,7" target="_blank" rel="noopener"
+       title="Windy: 風・雨・積雪の予想マップ">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 8h10a3 3 0 1 0-3-3"/><path d="M3 12h14a3 3 0 1 1-3 3"/>
+        <path d="M3 16h7a2.5 2.5 0 1 1-2.5 2.5"/>
+      </svg><span>風・積雪</span></a>
   </div>
   <div class="legend">
-    <span><img src="/img/mnt1.gif" alt="A">適</span>
-    <span><img src="/img/mnt2.gif" alt="B">やや不適</span>
-    <span><img src="/img/mnt3.gif" alt="C">不適</span>
+    <span><img src="img/mnt1.gif" alt="A適">適</span>
+    <span><img src="img/mnt2.gif" alt="Bやや不適">やや不適</span>
+    <span><img src="img/mnt3.gif" alt="C不適">不適</span>
     <span style="margin-left:auto">日中(6-15時)の最悪値</span>
   </div>
 </header>
@@ -276,7 +289,16 @@ function openDetail(m){
   if(!m) return;
   $('dTitle').textContent = m.name || m.code;
   const alt = m.altitude? `${m.altitude}m付近` : '';
-  let html = `<div class="dsub">${m.name||''}　${alt}${m.municipality?' ／ 麓: '+m.municipality:''}</div>`;
+  // 麓の市町村 → 気象庁の市町村予報（watchlist.json の jma が class20s のエリアコード）
+  let foot = '';
+  if(m.municipality){
+    foot = m.jma
+      ? ` ／ 麓: ${m.municipality} <a class="lnk" target="_blank" rel="noopener"
+           href="https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=${m.jma}"
+           title="気象庁 天気予報（麓の市町村）">気象庁 ↗</a>`
+      : ` ／ 麓: ${m.municipality}`;
+  }
+  let html = `<div class="dsub">${m.name||''}　${alt}${foot}</div>`;
   if(m.error){ html += `<div class="dday">データを取得できませんでした（${m.error}）</div>`; }
   (m.days||[]).forEach(d=>{
     const hours = Object.entries(d.hours||{}).sort((a,b)=>parseInt(a[0],10)-parseInt(b[0],10))

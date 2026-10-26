@@ -69,6 +69,7 @@ def main():
             got["name"] = m.get("name") or got.get("name") or code
             got["ba"] = ba
             got["region"] = m.get("region", "")
+            got["jma"] = m.get("jma", "")  # 麓の市町村（気象庁 class20s のエリアコード）
             out.append(got)
             print(f"OK   {got['name']} {got.get('altitude')}m")
         else:
@@ -76,11 +77,13 @@ def main():
             if code in prev:
                 old = dict(prev[code])
                 old["stale"] = True
+                old["jma"] = m.get("jma", old.get("jma", ""))
                 out.append(old)
                 print(f"STALE {m['name']} （前回データを使用）")
             else:
                 out.append({"code": code, "name": m.get("name", code), "ba": ba,
-                            "region": m.get("region", ""), "error": "fetch failed", "days": []})
+                            "region": m.get("region", ""), "jma": m.get("jma", ""),
+                            "error": "fetch failed", "days": []})
                 print(f"FAIL {m['name']}")
 
         time.sleep(1.0)  # サイトへの配慮
