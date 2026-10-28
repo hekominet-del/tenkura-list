@@ -24,7 +24,8 @@ web/                     画面のソース（編集するのはここ）
   index.html             本体（CSS/JS込み・1ファイル）
   manifest.webmanifest   PWA定義（アイコン192/512 PNG必須）
   sw.js                  Service Worker（data.jsonはネットワーク優先）
-  icon-192.png / icon-512.png / apple-touch-icon.png
+  icon-192.png / icon-512.png / icon-maskable-512.png / apple-touch-icon.png
+                         （make_icons.py で生成。素材は img/mnt1.gif＝指数Aのバッジ）
 build.py                 watchlist.json の山を取得 → public/data.json、web/ を public/ へコピー
 tenkura.py               てんきとくらすの取得・解析（標準ライブラリのみ・pip不要）
 watchlist.json           表示する山のリスト（名前 / code / ba / region）
@@ -91,6 +92,8 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
   `https://tenkura.n-kishou.co.jp/tk/kanko/kad.html?code=16150013&type=15&ba=hr`
   `ba`: hk北海道 / th東北 / hr北陸 / kk関東・甲信 / tk東海 / kn近畿 / cg中国 / sk四国 / ks九州・沖縄
 - **時刻は必ずJSTオフセット付き**（`+09:00`）。ActionsはUTCなので naive な文字列にするとブラウザ側で9時間ずれる
+- **山名タップは「てんきとくらすの今日の天気」へ直行**。`kad.html?...&type=15&ba=..#temp-d` の `#temp-d`（今日の表の気温行のid）でスクロールさせる。ページ内に「今日の天気」見出しのアンカーが無いため。テキストフラグメント（`#:~:text=`）は環境によって効かないので使わない。アプリ内の詳細シートは指数セルのタップから開く
+- **麓の天気（気象庁）リンクは一覧の山名の下**（詳細シートから移動した）。`jma` が無い山はリンクを出さない
 - **`jma` は気象庁の市町村予報エリアコード**（class20s）。`watchlist.json` に手で持たせ、`build.py` が data.json へ素通しする。詳細画面の「麓: ○○町 気象庁 ↗」はこれで `https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=<jma>` を開く。山の麓名（municipality）から引くときは `https://www.jma.go.jp/bosai/common/const/area.json` の `class20s` を名前一致で検索
 - **取得失敗時は前回データを引き継ぐ**（`stale: true`）。全山失敗なら data.json を更新せず exit 1
 - **アセットはすべて相対パス**。Pagesはサブパス（`/tenkura-list/`）配信なので `/icon.png` は404になる（凡例アイコンを `/img/mnt1.gif` と書いて404にした実例あり。表内は `img/mnt1.gif` で正しかった）
@@ -115,4 +118,5 @@ git fetch origin && git reset --soft origin/main && git commit -m "変更内容"
 ## 履歴
 
 - 2026-10-26: ローカル版（PC内サーバー）から GitHub Pages + Actions + PWA へ移行して公開。8山・1日5回更新で稼働中
+- 2026-10-28: ①アプリアイコンを指数Aのバッジ（緑の山＋A）に変更（make_icons.py 新設・maskable用PNG追加・icon.svg廃止）②麓の天気（気象庁）リンクを詳細シートから一覧の山名の下へ移動 ③山名タップでてんきとくらすの「今日の天気」へ直行（#temp-d）
 - 2026-10-26: ①凡例アイコンの404修正（絶対パス→相対パス）②雨雲レーダーを大きなボタンに ③windy（風・積雪）リンクを隣に追加 ④詳細画面の麓の横に気象庁リンク（jma コード導入）
