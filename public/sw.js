@@ -1,6 +1,6 @@
 // 山の天気まとめ - service worker
 // 方針: アプリ本体はキャッシュ優先、data.json はネットワーク優先（失敗時はキャッシュ）
-const CACHE = 'tenkura-v6';  // 画面を更新したら必ず上げる（キャッシュ優先のため）
+const CACHE = 'tenkura-v7';  // 画面を更新したら必ず上げる（キャッシュ優先のため）
 const SHELL = ['./', './index.html', './manifest.webmanifest',
   './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png',
   './img/mnt1.gif', './img/mnt2.gif', './img/mnt3.gif'];

@@ -126,9 +126,12 @@ const $ = id => document.getElementById(id);
 const RANK = {A:3,B:2,C:1};
 const ICON = {A:'img/mnt1.gif', B:'img/mnt2.gif', C:'img/mnt3.gif'};
 
-// てんきとくらすの山ページ。「今日の天気」の表（気温行に id=temp-d）へ直行する
+// てんきとくらすの山ページの「今日の天気」へ直行する。
+// 表の id（temp-d）はスマホ版ページでは非表示のPC用テーブル側に付くため効かない。
+// 見出しの文字を指すテキストフラグメント（#:~:text=）なら PC版/スマホ版どちらでも着地する。
 const TENKURA_BASE = 'https://tenkura.n-kishou.co.jp/tk/kanko/kad.html';
-const tenkuraUrl = m => `${TENKURA_BASE}?code=${m.code}&type=15&ba=${m.ba||'hr'}#temp-d`;
+const TODAY_ANCHOR = '#:~:text=' + encodeURIComponent('登山指数と上空の気温・風');
+const tenkuraUrl = m => `${TENKURA_BASE}?code=${m.code}&type=15&ba=${m.ba||'hr'}${TODAY_ANCHOR}`;
 // 麓の市町村 → 気象庁の市町村予報（jma は class20s のエリアコード）
 const jmaUrl = m => `https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=${m.jma}`;
 
