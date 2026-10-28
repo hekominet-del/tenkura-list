@@ -19,7 +19,7 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;background:var(--bg);color:var(--fg);
     font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP","Yu Gothic UI",sans-serif;}
-  body{padding-bottom:calc(78px + env(safe-area-inset-bottom));}
+  body{padding-bottom:24px;}
   header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.94);
     backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
     padding:calc(10px + env(safe-area-inset-top)) 14px 8px;}
@@ -42,7 +42,6 @@
   .ql-primary{background:#1d4ed8;border-color:#3b82f6;color:#fff;
     box-shadow:0 2px 10px rgba(37,99,235,.35);font-size:13.5px}
   .ql-primary svg{width:18px;height:18px}
-  .lnk{color:#93c5fd;text-decoration:none;border-bottom:1px solid rgba(147,197,253,.55)}
 
   .wrap{padding:10px 10px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
   table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed}
@@ -55,14 +54,15 @@
     padding:7px 4px 7px 2px;border-right:1px solid var(--line);width:92px;max-width:92px}
   .mname{font-size:11px;font-weight:700;line-height:1.2;display:-webkit-box;
     -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:88px;
-    color:var(--fg);text-decoration:none}
-  a.mname{text-decoration:underline;text-decoration-color:rgba(147,197,253,.45);
-    text-decoration-thickness:1px;text-underline-offset:2px}
+    color:var(--fg);text-decoration:underline;
+    text-decoration-color:rgba(147,197,253,.45);text-decoration-thickness:1px;text-underline-offset:2px}
   .msub{font-size:9px;color:var(--muted);display:block;margin-top:1px}
   .flink{display:block;margin-top:2px;font-size:9px;line-height:1.25;color:#93c5fd;
     text-decoration:none;white-space:nowrap;width:max-content;
     border-bottom:1px solid rgba(147,197,253,.5)}
-  .cell{cursor:pointer}
+  td.cell a{display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-decoration:none;color:inherit}
+  td.cell a:active{opacity:.6}
   .badge{display:inline-flex;align-items:center;justify-content:center;width:27px;height:24px}
   .badge img{width:27px;height:auto;display:block}
   .bN{background:#2b3a52;color:var(--muted);font-size:11px;border-radius:7px;width:24px;height:24px}
@@ -70,49 +70,7 @@
   tr.err td{color:var(--C);font-size:11px}
 
   .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
-  footer{text-align:center;font-size:10px;color:var(--muted);padding:14px 20px 4px;line-height:1.6}
-
-  .fabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:flex;gap:8px;
-    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
-    background:linear-gradient(to top,rgba(11,18,32,.98),rgba(11,18,32,.75) 70%,transparent)}
-  .fab{flex:1;border:none;border-radius:13px;padding:13px;font-size:14px;font-weight:700;
-    background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;gap:6px}
-  .fab.ghost{background:var(--card);color:var(--fg);border:1px solid var(--line);flex:0 0 auto;padding:13px 16px}
-
-  .sheet{position:fixed;inset:0;z-index:50;display:none;background:rgba(4,8,16,.6)}
-  .sheet.on{display:block}
-  .panel{position:absolute;inset:auto 0 0 0;max-height:88vh;background:var(--bg);
-    border-radius:18px 18px 0 0;border-top:1px solid var(--line);display:flex;flex-direction:column;
-    animation:up .18s ease-out}
-  @keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
-  .ph{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 8px;gap:10px}
-  .ph b{font-size:14px}
-  .ph .x{background:none;border:none;color:var(--muted);font-size:22px;line-height:1;padding:0 4px}
-  .search{padding:0 14px 10px}
-  .search input{width:100%;padding:11px 12px;border-radius:11px;border:1px solid var(--line);
-    background:var(--card);color:var(--fg);font-size:15px;outline:none}
-  .search input::placeholder{color:#5f7a9c}
-  .results{overflow-y:auto;padding:0 8px 24px}
-  .ritem{display:flex;align-items:center;justify-content:space-between;gap:10px;
-    padding:10px 10px;border-bottom:1px solid rgba(38,54,79,.5)}
-  .ritem .nm{font-size:13.5px}
-  .ritem .rg{font-size:10px;color:var(--muted)}
-  .add{background:#1d4ed8;border:none;color:#fff;border-radius:9px;padding:7px 12px;font-size:12.5px}
-  .add.on{background:#243a5c;color:var(--muted)}
-
-  .detail{padding:0 16px 26px;overflow-y:auto}
-  .dtitle{font-size:17px;font-weight:800}
-  .dsub{font-size:11.5px;color:var(--muted);margin:2px 0 12px}
-  .dday{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
-  .dtop{display:flex;align-items:center;justify-content:space-between;gap:8px}
-  .ddate{font-size:12.5px;font-weight:700}
-  .dvals{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.6}
-  .hours{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}
-  .hz{font-size:9.5px;color:var(--muted);text-align:center;width:34px}
-  .hz b{display:block;font-size:10px;color:var(--fg);margin-bottom:2px}
-  .link{display:block;text-align:center;margin-top:8px;font-size:12px;color:#93c5fd;text-decoration:none}
-  .delrow{display:flex;justify-content:flex-end;margin-top:6px}
-  .del{background:none;border:1px solid #7f1d1d;color:#fca5a5;border-radius:9px;padding:6px 12px;font-size:12px}
+  footer{text-align:center;font-size:10px;color:var(--muted);padding:14px 20px 4px;line-height:1.7}
   .spin{padding:34px;text-align:center;color:var(--muted);font-size:12.5px}
 </style>
 </head>
@@ -157,80 +115,28 @@
   </table>
 </div>
 <footer>
+  山名・指数マークをタップすると、てんきとくらすの今日の天気が開きます。<br>
   登山指数は山頂付近の気象から算出された目安です。実際の天候とは異なる場合があります。<br>
   数値はてんきとくらすのページから取得しています（1日5回・自動更新）。
 </footer>
 
-<div class="fabbar">
-  <button class="fab" id="addBtn" style="display:none">＋ 山を追加</button>
-</div>
-
-<div class="sheet" id="searchSheet">
-  <div class="panel">
-    <div class="ph"><b>山を追加（全国3,015座）</b><button class="x" data-close>×</button></div>
-    <div class="search"><input id="q" placeholder="山名で検索（例: 立山 / 白山 / 白馬）" autocomplete="off"></div>
-    <div class="results" id="results"></div>
-  </div>
-</div>
-
-<div class="sheet" id="detailSheet">
-  <div class="panel">
-    <div class="ph"><b id="dTitle">—</b><button class="x" data-close>×</button></div>
-    <div class="detail" id="detail"></div>
-  </div>
-</div>
-
 <script>
-const LS_KEY = 'yama.list.v2';
-const LEGACY_KEY = 'yama.list.v1';
-// 劔岳→妙高山、富士山山頂→八ヶ岳 に差し替え（旧リストを引き継ぐとき用）
-const SWAP = {
-  '16150008': {code:'15150005', name:'妙高山'},
-  '19150004': {code:'20150018', name:'八ヶ岳'}
-};
-const DEFAULTS = [
-  {code:'16150013', name:'立山'},
-  {code:'17150001', name:'御前峰（白山）'},
-  {code:'20150019', name:'白馬岳'},
-  {code:'20150022', name:'槍ヶ岳'},
-  {code:'15150005', name:'妙高山'},
-  {code:'20150018', name:'八ヶ岳'}
-];
-let mylist = [];
-let master = [];
-let data = null;
-let sortByIndex = false;
-
+// 1ページ完結のアプリ。詳細シート・山の追加シートは廃止した。
 const $ = id => document.getElementById(id);
-const load = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)) || null } catch(e){ return null } };
-const save = () => localStorage.setItem(LS_KEY, JSON.stringify(mylist));
 const RANK = {A:3,B:2,C:1};
-const fmtT = iso => { const d = new Date(iso); return d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}); };
-
-function initialList(){
-  const cur = load();
-  if(cur) return cur;
-  let old = null;
-  try { old = JSON.parse(localStorage.getItem(LEGACY_KEY)) } catch(e){}
-  if(Array.isArray(old) && old.length){
-    const seen = new Set(); const out = [];
-    for(const x of old){
-      const y = SWAP[x.code] || x;
-      if(y && y.code && !seen.has(y.code)){ seen.add(y.code); out.push({code:y.code, name:y.name}); }
-    }
-    if(out.length) return out;
-  }
-  return DEFAULTS.slice();
-}
-mylist = initialList();
-save();
-
 const ICON = {A:'img/mnt1.gif', B:'img/mnt2.gif', C:'img/mnt3.gif'};
+
 // てんきとくらすの山ページ。「今日の天気」の表（気温行に id=temp-d）へ直行する
 const TENKURA_BASE = 'https://tenkura.n-kishou.co.jp/tk/kanko/kad.html';
 const tenkuraUrl = m => `${TENKURA_BASE}?code=${m.code}&type=15&ba=${m.ba||'hr'}#temp-d`;
 // 麓の市町村 → 気象庁の市町村予報（jma は class20s のエリアコード）
 const jmaUrl = m => `https://www.jma.go.jp/bosai/forecast/#area_type=class20s&area_code=${m.jma}`;
+
+let data = null;
+let sortByIndex = false;
+
+const fmtT = iso => { const d = new Date(iso); return d.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'}); };
+
 function badge(idx){
   if(!idx || !ICON[idx]) return '<span class="badge bN">−</span>';
   return `<span class="badge"><img src="${ICON[idx]}" alt="${idx}指数" loading="lazy"></span>`;
@@ -273,67 +179,32 @@ function render(){
   }
   const body = $('body');
   if(!ms.length){
-    body.innerHTML = '<tr><td colspan="9" class="empty">山が登録されていません。<br>「＋ 山を追加」から選んでください。</td></tr>';
+    body.innerHTML = '<tr><td colspan="9" class="empty">データがありません。「更新」を押してください。</td></tr>';
     return;
   }
-  body.innerHTML = ms.map((m, mi)=>{
+  body.innerHTML = ms.map(m=>{
     const byDate = {};
     (m.days||[]).forEach(d=>{ byDate[d.date]=d });
+    const url = tenkuraUrl(m);
     const cells = cols.map(c=>{
       const d = byDate[c];
-      if(m.error) return '<td>—</td>';
-      if(!d) return '<td>—</td>';
+      if(m.error || !d) return '<td>—</td>';
       const t = d.temp_max!==null && d.temp_min!==null && d.temp_max!==d.temp_min
         ? `${Math.round(d.temp_max)}/${Math.round(d.temp_min)}` : tempLabel(d.temp_max);
-      return `<td class="cell" data-i="${mi}" data-date="${c}">${badge(d.index)}<span class="tmp">${t}</span></td>`;
+      return `<td class="cell"><a href="${url}" target="_blank" rel="noopener"
+        title="てんきとくらす：${m.name||m.code}の${c}の天気">${badge(d.index)}<span class="tmp">${t}</span></a></td>`;
     }).join('');
     const alt = m.altitude ? `${m.altitude}m` : '';
-    // 山名 → てんきとくらすの「今日の天気」へ直行（#temp-d は今日の表の気温行）
+    // 麓の市町村 → 気象庁のその町の予報（行の中の別リンク）
     const fh = m.jma
       ? `<a class="flink" href="${jmaUrl(m)}" target="_blank" rel="noopener"
            title="気象庁 天気予報（麓の${m.municipality||'市町村'}）">麓の天気 ↗</a>` : '';
     return `<tr class="${m.error?'err':''}">
-      <td class="name"><a class="mname" href="${tenkuraUrl(m)}" target="_blank" rel="noopener"
+      <td class="name"><a class="mname" href="${url}" target="_blank" rel="noopener"
         title="てんきとくらすで今日の天気を見る">${m.name||m.code}</a><span class="msub">${alt}${m.error?' 取得失敗':''}</span>${fh}</td>
       ${cells}</tr>`;
   }).join('');
-
-  document.querySelectorAll('.cell').forEach(el=>el.onclick=()=>openDetail(ms[+el.dataset.i]));
 }
-
-function openDetail(m){
-  if(!m) return;
-  $('dTitle').textContent = m.name || m.code;
-  const alt = m.altitude? `${m.altitude}m付近` : '';
-  // 麓の市町村は名前だけ表示（麓の天気リンクは一覧の山名の下へ移動した）
-  const foot = m.municipality ? ` ／ 麓: ${m.municipality}` : '';
-  let html = `<div class="dsub">${m.name||''}　${alt}${foot}</div>`;
-  if(m.error){ html += `<div class="dday">データを取得できませんでした（${m.error}）</div>`; }
-  (m.days||[]).forEach(d=>{
-    const hours = Object.entries(d.hours||{}).sort((a,b)=>parseInt(a[0],10)-parseInt(b[0],10))
-      .map(([h,i])=>`<span class="hz"><b>${h}時</b>${badge(i)}</span>`).join('');
-    const rain = m.rain?.[d.date];
-    html += `<div class="dday">
-      <div class="dtop"><span class="ddate">${d.date}</span>${badge(d.index)}</div>
-      <div class="dvals">
-        ${d.temp_max!==null?`気温 ${Math.round(d.temp_max)}${d.temp_min!==null&&d.temp_min!==d.temp_max?' 〜 '+Math.round(d.temp_min):''}℃`:''}
-        ${d.wind_max!==null?`　風 ${Math.round(d.wind_max)}m/s`:''}
-        ${rain!==undefined&&rain!==null?`　降水 ${rain}%`:''}
-      </div>
-      ${hours?`<div class="hours">${hours}</div>`:''}
-    </div>`;
-  });
-  html += `<a class="link" target="_blank" rel="noopener"
-      href="${tenkuraUrl(m)}">てんきとくらすで今日の天気を見る ↗</a>
-    <div class="delrow"><button class="del" data-del="${m.code}">この山をリストから削除</button></div>`;
-  $('detail').innerHTML = html;
-  $('detail').querySelector('[data-del]').onclick = ()=>{
-    mylist = mylist.filter(x=>x.code!==m.code); save(); closeSheets(); fetchData();
-  };
-  $('detailSheet').classList.add('on');
-}
-
-function closeSheets(){ document.querySelectorAll('.sheet').forEach(s=>s.classList.remove('on')) }
 
 async function fetchData(){
   $('body').innerHTML = '<tr><td class="spin">読み込み中…</td></tr>';
@@ -348,46 +219,10 @@ async function fetchData(){
   }
 }
 
-async function loadMaster(){
-  // 静的版: master は data.json に含まれる山だけ（固定リスト）
-  try{
-    const r = await fetch('data.json', {cache:'no-store'});
-    const j = await r.json();
-    master = (j.mountains||[]).map(m=>({code:m.code, name:m.name, region:m.region||'', ba:m.ba||'hr'}));
-  }catch(e){ master = []; }
-}
-
-function searchResults(q){
-  const box = $('results');
-  const s = q.trim();
-  let hits = s ? master.filter(m=>m.name.includes(s)) : master.slice(0,40);
-  hits = hits.slice(0,80);
-  box.innerHTML = hits.map(m=>{
-    const has = mylist.some(x=>x.code===m.code);
-    return `<div class="ritem"><div><div class="nm">${m.name}</div><div class="rg">${m.region||''}・${m.code}</div></div>
-      <button class="${has?'add on':'add'}" data-code="${m.code}" data-name="${m.name}">${has?'追加済':'追加'}</button></div>`;
-  }).join('') || '<div class="empty">該当なし</div>';
-  box.querySelectorAll('.add').forEach(b=>b.onclick=async()=>{
-    if(mylist.some(x=>x.code===b.dataset.code)) return;
-    mylist.push({code:b.dataset.code, name:b.dataset.name}); save();
-    b.textContent='追加済'; b.classList.add('on');
-    closeSheets(); await fetchData();
-  });
-}
-
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeSheets);
-document.querySelectorAll('.sheet').forEach(s=>s.addEventListener('click',e=>{ if(e.target===s) closeSheets() }));
-$('addBtn').onclick = ()=>{ $('searchSheet').classList.add('on'); $('q').value=''; searchResults(''); $('q').focus(); };
-$('q').oninput = e => searchResults(e.target.value);
-$('reloadBtn').onclick = async ()=>{
-  await fetch('/api/forecast?codes='+mylist.map(m=>m.code).join(',')+'&bust=1').catch(()=>{});
-  fetchData();
-};
+$('reloadBtn').onclick = () => fetchData();
 $('sortBtn').onclick = ()=>{ sortByIndex=!sortByIndex; $('sortBtn').textContent = sortByIndex?'指数順 ✓':'指数順'; render(); };
 
-(async ()=>{ await loadMaster(); await fetchData();
-  setInterval(fetchData, 10*60*1000);
-})();
+(async ()=>{ await fetchData(); setInterval(fetchData, 10*60*1000); })();
 
 // PWA: service worker（オフラインでも最後のデータを表示）
 if ('serviceWorker' in navigator) {
