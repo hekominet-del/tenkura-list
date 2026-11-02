@@ -30,10 +30,10 @@
     border-radius:10px;padding:6px 10px;font-size:12px;display:flex;align-items:center;gap:4px}
   .btn:active{background:var(--card2)}
   .meta{font-size:11px;color:var(--muted);margin-top:6px;display:flex;gap:10px;flex-wrap:wrap}
-  .legend{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);margin-top:6px;flex-wrap:wrap;row-gap:3px}
+  .legend{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--muted);margin-top:6px;flex-wrap:wrap;row-gap:4px}
   .legend span{display:inline-flex;align-items:center;gap:3px}
-  .legend img{height:auto;width:24px;display:block}
-  .legend .note{margin-left:auto;font-size:9px;line-height:1.3;text-align:right;letter-spacing:-.02em}
+  .legend img{height:auto;width:28px;display:block}
+  .legend .note{margin-left:auto;font-size:10px;line-height:1.35;text-align:right;letter-spacing:-.02em}
   .quick{display:flex;gap:8px;margin-top:9px}
   .ql{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none;
     background:var(--card);border:1px solid var(--line);color:var(--fg);
@@ -44,45 +44,48 @@
     box-shadow:0 2px 10px rgba(37,99,235,.35);font-size:13.5px}
   .ql-primary svg{width:18px;height:18px}
 
-  .wrap{padding:10px 10px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .wrap{padding:10px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
   /* 1行＝1山。山名＋麓の天気は左に固定（sticky）して、アイコンの列だけ横スクロールする */
-  table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;max-width:860px;min-width:636px}
-  thead th{position:sticky;top:0;background:var(--bg);font-weight:600;font-size:9.5px;
-    color:var(--muted);padding:3px 0;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;z-index:7}
-  thead th.name{text-align:left;padding-left:5px;position:sticky;left:0;z-index:8;background:var(--bg);width:88px}
-  thead th.dw{width:142px}
-  thead th.dn{width:44px}
+  table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;max-width:900px;min-width:704px}
+  thead th{position:sticky;top:0;background:var(--bg);font-weight:600;font-size:11px;
+    color:var(--muted);padding:4px 0;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;z-index:7}
+  thead th.name{text-align:left;padding-left:12px;position:sticky;left:0;z-index:8;background:var(--bg);width:112px}
+  thead th.dw{width:158px}
+  thead th.dn{width:46px}
   thead th.today{color:#93c5fd}
-  thead .hd{display:block;font-weight:400;font-size:8.5px}
-  thead .ticks{display:flex;justify-content:center;gap:6px;margin-top:1px}
-  thead .ticks i{width:30px;text-align:center;font-style:normal;font-size:8px;color:#7f96b3;font-weight:700}
-  tbody td{border-bottom:1px solid rgba(38,54,79,.6);padding:5px 0;text-align:center;vertical-align:top}
+  thead .hd{display:block;font-weight:400;font-size:9.5px}
+  thead .ticks{display:flex;justify-content:center;gap:6px;margin-top:2px}
+  thead .ticks i{width:34px;text-align:center;font-style:normal;font-size:9.5px;color:#8fa9c9;font-weight:700}
+  tbody td{border-bottom:1px solid rgba(38,54,79,.6);padding:7px 0;text-align:center;vertical-align:top}
   td.name{text-align:left;position:sticky;left:0;background:var(--bg);z-index:5;
-    padding:7px 4px 7px 2px;border-right:1px solid var(--line);width:88px;max-width:88px;
+    padding:8px 6px 8px 12px;border-right:1px solid var(--line);width:112px;max-width:112px;
     box-shadow:6px 0 8px -6px rgba(0,0,0,.55)}
-  .mname{font-size:11px;font-weight:700;line-height:1.2;display:-webkit-box;
-    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:84px;
+  .mname{font-size:13.5px;font-weight:700;line-height:1.2;display:-webkit-box;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:104px;
     color:var(--fg);text-decoration:underline;
     text-decoration-color:rgba(147,197,253,.45);text-decoration-thickness:1px;text-underline-offset:2px}
-  .msub{font-size:9px;color:var(--muted);display:block;margin-top:1px}
-  .flink{display:block;margin-top:2px;font-size:9px;line-height:1.25;color:#93c5fd;
+  .msub{font-size:10px;color:var(--muted);display:block;margin-top:2px}
+  .flink{display:block;margin-top:3px;font-size:10.5px;line-height:1.25;color:#93c5fd;
     text-decoration:none;white-space:nowrap;width:max-content;
     border-bottom:1px solid rgba(147,197,253,.5)}
+  /* 横スクロール時にアイコンが固定列の上に描かれないよう、日付セルは必ず下の層に置く */
+  td.cell{position:relative;z-index:1}
   td.cell a{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
     gap:2px;text-decoration:none;color:inherit}
   td.cell a:active{opacity:.6}
-  .badge{display:inline-flex;align-items:center;justify-content:center;width:30px;height:27px}
-  .badge img{width:30px;height:auto;display:block}
-  .bN{background:#2b3a52;color:var(--muted);font-size:11px;border-radius:7px;width:28px;height:27px}
-  .tmp{display:block;font-size:9px;color:var(--muted);margin-top:2px;line-height:1}
-  /* 今日・明日：6/9/12/15時の4マークを1列に。時刻は表の見出しに同じ幅で並べる（.hr と .ticks i を同じ30pxに） */
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:34px;height:31px}
+  .badge img{width:34px;height:auto;display:block}
+  .bN{background:#2b3a52;color:var(--muted);font-size:12px;border-radius:8px;width:32px;height:31px}
+  .tmp{display:block;font-size:11px;color:var(--muted);margin-top:3px;line-height:1}
+  /* 今日・明日：6/9/12/15時の4マーク＋時刻ごとの気温が縦に並ぶ。目盛りは .ticks i と同じ34px幅 */
   .hrs{display:flex;justify-content:center;gap:6px}
-  .hr{width:30px;display:flex;justify-content:center}
+  .hr{width:34px;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .ht{font-size:10.5px;color:#a8bcd8;line-height:1;font-weight:600}
   tr.err td{color:var(--C);font-size:11px}
 
   .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
-  .scrollhint{display:none;text-align:center;font-size:9.5px;color:var(--muted);padding:5px 0 0}
-  footer{text-align:center;font-size:10px;color:var(--muted);padding:14px 20px 4px;line-height:1.7}
+  .scrollhint{display:none;text-align:center;font-size:11px;color:var(--muted);padding:7px 0 0}
+  footer{text-align:center;font-size:11px;color:var(--muted);padding:16px 20px 4px;line-height:1.8}
   .spin{padding:34px;text-align:center;color:var(--muted);font-size:12.5px}
 </style>
 </head>
@@ -116,7 +119,7 @@
     <span><img src="img/mnt1.gif" alt="A適">適</span>
     <span><img src="img/mnt2.gif" alt="Bやや不適">やや不適</span>
     <span><img src="img/mnt3.gif" alt="C不適">不適</span>
-    <span class="note">今日・明日＝左から6・9・12・15時<br>明後日以降＝日中(6-15時)の最悪値</span>
+    <span class="note">今日・明日＝左から6・9・12・15時<br>アイコンの下は山頂付近の気温<br>明後日以降＝日中(6-15時)の最悪値</span>
   </div>
 </header>
 
@@ -197,22 +200,26 @@ function tempText(d){
     return `${Math.round(d.temp_max)}/${Math.round(d.temp_min)}`;
   return tempLabel(d.temp_max);
 }
-// 上段（今日・明日）：6・9・12・15時の4マーク。時刻は見出し側の目盛りに並ぶ。
-// 夕方以降はてんきとくらすが過ぎた時間を落とすので、4つとも無い日は従来どおり1マークに戻す。
+// 上段（今日・明日）：6・9・12・15時の4マーク＋その時刻の気温。時刻は見出し側の目盛りに並ぶ。
+// 夕方以降はてんきとくらすが過ぎた時間を落とすので、4つとも無い日は1マーク（日中の最悪/最高最低）に戻す。
 function hourCell(m, c, d, url){
-  const hrs = d.hours || {};
-  const inner = HOURS.some(([h])=>hrs[h])
-    ? '<span class="hrs">' + HOURS.map(([h]) =>
-        `<span class="hr" title="${m.name||m.code} ${c} ${+h}時${hrs[h]?'':'（発表なし）'}">${badge(hrs[h])}</span>`
-      ).join('') + '</span>'
-    : badge(d.index);
+  const hrs = d.hours || {}, ht = d.hour_temp || {};
+  // 今日の15時以降は6-15時のデータが消えるので、残り時間の値に「夜」と添えて1マークで出す
+  if(!HOURS.some(([h])=>hrs[h])) return dayCell(m, c, d, url, true);
+  const inner = '<span class="hrs">' + HOURS.map(([h]) => {
+    const t = ht[h];
+    const tt = (t===null || t===undefined) ? '' : `${Math.round(t)}°`;
+    return `<span class="hr" title="${m.name||m.code} ${c} ${+h}時 ${tt||'気温なし'}${hrs[h]?'':'（指数なし）'}">`
+      + `${badge(hrs[h])}<span class="ht">${tt}</span></span>`;
+  }).join('') + '</span>';
   return `<td class="cell"><a href="${url}" target="_blank" rel="noopener"
-    title="てんきとくらす：${m.name||m.code}の${c}の天気">${inner}<span class="tmp">${tempText(d)}</span></a></td>`;
+    title="てんきとくらす：${m.name||m.code}の${c}の天気">${inner}</a></td>`;
 }
-// 下段（明後日以降）：週間予報の1マーク＝日中6-15時の最悪値
-function dayCell(m, c, d, url){
+// 下段（明後日以降／夕方以降の今日）：週間予報の1マーク＝日中6-15時の最悪値、気温は日中6-15時の最高/最低
+function dayCell(m, c, d, url, night){
+  const t = tempText(d);
   return `<td class="cell"><a href="${url}" target="_blank" rel="noopener"
-    title="てんきとくらす：${m.name||m.code}の${c}の天気">${badge(d.index)}<span class="tmp">${tempText(d)}</span></a></td>`;
+    title="てんきとくらす：${m.name||m.code}の${c}の天気">${badge(d.index)}<span class="tmp">${t ? (night ? '夜 '+t : t) : ''}</span></a></td>`;
 }
 
 function render(){

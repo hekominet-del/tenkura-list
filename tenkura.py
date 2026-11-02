@@ -116,6 +116,8 @@ def parse_mountain(html, code):
                 "label": b["label"],
                 "index": min(letters, key=lambda x: RANK[x]) if letters else None,
                 "hours": {h: i for h, i in zip(b["header"], idx) if i},
+                # 時刻ごとの気温（山頂付近＝700hPa）。今日/明日のアイコンの下に出す
+                "hour_temp": {h: t for h, t in zip(b["header"], temp) if t is not None},
                 "temp_max": max(temps) if temps else None,
                 "temp_min": min(temps) if temps else None,
                 "wind_max": max(winds) if winds else None,
