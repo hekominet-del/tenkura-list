@@ -79,10 +79,10 @@ def parse_mountain(html, code):
             txt = [clean(c) for c in cells]
             if any(t.startswith("時 間") or t.startswith("時間") for t in txt):
                 blocks.append({"label": label, "kind": "hourly",
-                               "header": txt[1:], "index": [], "temp": [], "wind": []})
+                               "header": txt[1:], "index": [], "temp": [], "wind": [], "temps": []})
             elif any(t.startswith("日 付") or t.startswith("日付") for t in txt):
                 blocks.append({"label": label, "kind": "daily",
-                               "header": txt[1:], "index": [], "temp": [], "wind": []})
+                               "header": txt[1:], "index": [], "temp": [], "wind": [], "temps": []})
             elif not blocks:
                 continue
             elif txt[0].startswith("登山指数"):
@@ -91,16 +91,29 @@ def parse_mountain(html, code):
                 for c in cells[1:]:
                     mm = re.search(r"tozan/(mnt\d)\.gif", c)
                     b["index"].append(IDX.get(mm.group(1)) if mm else None)
-            elif any(t == "気温" for t in txt) and not blocks[-1]["temp"]:
-                blocks[-1]["temp"] = [num(c) for c in cells[-len(blocks[-1]["header"]):]]
+            elif any(t == "気温" for t in txt):
+                # 気温は高度ごとに2段ある（例: 高度3100m付近/700hPa と 高度2000m付近/800hPa）。
+                # どちらの行か分かるよう高さも一緒に覚えておき、あとで2000m付近の行を選ぶ。
+                hm = re.search(r"(\d{3,4})\s*m\s*付近", " ".join(txt))
+                blocks[-1]["temps"].append(
+                    (int(hm.group(1)) if hm else None,
+                     [num(c) for c in cells[-len(blocks[-1]["header"]):]]))
             elif (txt[0].startswith("風") or txt[0].startswith("風速")) and not blocks[-1]["wind"]:
                 blocks[-1]["wind"] = [num(c) for c in cells[-len(blocks[-1]["header"]):]]
+
+    def pick_temp(b):
+        """表示に使う気温＝標高2000m付近（800hPa）の行。無ければ先頭の行。"""
+        rows = b.get("temps") or []
+        for h, vals in rows:
+            if h is not None and 1800 <= h <= 2200:
+                return vals
+        return rows[0][1] if rows else []
 
     days = []
     for b in blocks:
         n = len(b["header"])
         idx = (b["index"] + [None] * n)[:n]
-        temp = (b["temp"] + [None] * n)[:n]
+        temp = (pick_temp(b) + [None] * n)[:n]
         wind = (b["wind"] + [None] * n)[:n]
         if b["kind"] == "hourly":
             slots = [(h, i, t, w) for h, i, t, w in zip(b["header"], idx, temp, wind)
