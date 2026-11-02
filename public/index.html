@@ -45,19 +45,25 @@
   .ql-primary svg{width:18px;height:18px}
 
   .wrap{padding:10px 10px 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-  table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;min-width:492px}
-  thead th{position:sticky;top:0;background:var(--bg);font-weight:600;font-size:9.5px;
+  table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed;max-width:560px}
+  /* 上段＝今日/明日（6・9・12・15時）、下段＝明後日以降。両方ともスマホ幅に収める */
+  #tblTop{min-width:336px}
+  #tblBot{min-width:340px}
+  thead th{background:var(--bg);font-weight:600;font-size:9.5px;
     color:var(--muted);padding:3px 0;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
-  thead th.name{text-align:left;padding-left:5px;position:sticky;left:0;z-index:6;background:var(--bg);width:92px}
-  /* 今日・明日は6/9/12/15時を2×2で置く（4つ横1列だと列が広すぎて画面に入りきらない） */
-  thead th.dw{width:92px}
-  thead th.dn{width:36px}
+  #tblTop thead th{position:sticky;top:0;z-index:7}
+  thead th.name{text-align:left;padding-left:5px;position:sticky;left:0;z-index:6;background:var(--bg);width:88px}
+  thead th.dw{width:124px}
+  thead th.dn{width:42px}
   thead th.today{color:#93c5fd}
+  thead .hd{display:block;font-weight:400;font-size:8.5px}
+  thead .ticks{display:flex;justify-content:center;gap:4px;margin-top:1px}
+  thead .ticks i{width:28px;text-align:center;font-style:normal;font-size:8px;color:#7f96b3;font-weight:700}
   tbody td{border-bottom:1px solid rgba(38,54,79,.6);padding:5px 0;text-align:center;vertical-align:top}
   td.name{text-align:left;position:sticky;left:0;background:var(--bg);z-index:5;
-    padding:7px 4px 7px 2px;border-right:1px solid var(--line);width:92px;max-width:92px}
+    padding:7px 4px 7px 2px;border-right:1px solid var(--line);width:88px;max-width:88px}
   .mname{font-size:11px;font-weight:700;line-height:1.2;display:-webkit-box;
-    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:88px;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:84px;
     color:var(--fg);text-decoration:underline;
     text-decoration-color:rgba(147,197,253,.45);text-decoration-thickness:1px;text-underline-offset:2px}
   .msub{font-size:9px;color:var(--muted);display:block;margin-top:1px}
@@ -67,15 +73,13 @@
   td.cell a{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
     gap:2px;text-decoration:none;color:inherit}
   td.cell a:active{opacity:.6}
-  .badge{display:inline-flex;align-items:center;justify-content:center;width:27px;height:24px}
-  .badge img{width:27px;height:auto;display:block}
-  .bN{background:#2b3a52;color:var(--muted);font-size:11px;border-radius:7px;width:24px;height:24px}
+  .badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:25px}
+  .badge img{width:28px;height:auto;display:block}
+  .bN{background:#2b3a52;color:var(--muted);font-size:11px;border-radius:7px;width:26px;height:25px}
   .tmp{display:block;font-size:9px;color:var(--muted);margin-top:2px;line-height:1}
-  /* 今日・明日：6/9/12/15時を2×2に。時刻はアイコンの左（下に置くと行の高さが揃わない） */
-  .hrs{display:grid;grid-template-columns:auto auto;gap:2px 8px;justify-content:center}
-  .hr{display:inline-flex;align-items:center;gap:1px}
-  .hl{font-size:9px;color:var(--muted);line-height:1;font-weight:700;
-    min-width:12px;text-align:right;letter-spacing:-.03em}
+  /* 今日・明日：6/9/12/15時の4マークを1列に。時刻は表の見出しに同じ幅で並べる（.hr と .ticks i を同じ28pxに） */
+  .hrs{display:flex;justify-content:center;gap:4px}
+  .hr{width:28px;display:flex;justify-content:center}
   tr.err td{color:var(--C);font-size:11px}
 
   .empty{padding:40px 20px;text-align:center;color:var(--muted);font-size:13px;line-height:1.7}
@@ -113,14 +117,20 @@
     <span><img src="img/mnt1.gif" alt="A適">適</span>
     <span><img src="img/mnt2.gif" alt="Bやや不適">やや不適</span>
     <span><img src="img/mnt3.gif" alt="C不適">不適</span>
-    <span class="note">今日・明日＝6・9・12・15時<br>明後日以降＝日中(6-15時)の最悪値</span>
+    <span class="note">今日・明日＝左から6・9・12・15時<br>明後日以降＝日中(6-15時)の最悪値</span>
   </div>
 </header>
 
 <div class="wrap">
-  <table id="tbl">
-    <thead><tr id="head"></tr></thead>
-    <tbody id="body"><tr><td class="spin">読み込み中…</td></tr></tbody>
+  <table id="tblTop">
+    <thead><tr id="headTop"></tr></thead>
+    <tbody id="bodyTop"><tr><td class="spin">読み込み中…</td></tr></tbody>
+  </table>
+</div>
+<div class="wrap">
+  <table id="tblBot">
+    <thead><tr id="headBot"></tr></thead>
+    <tbody id="bodyBot"></tbody>
   </table>
 </div>
 <footer>
@@ -176,12 +186,58 @@ function columns(){
   return (useful.length ? useful : cols).slice(0,8);
 }
 
+const LABELS = ['今日','明日','明後日','3日後','4日後','5日後','6日後','7日後'];
+const cleanDate = c => c.replace(/\(.\)/,'');
+
+// 山名セル（上段・下段で同じものを使う）
+function nameCell(m, url){
+  const alt = m.altitude ? `${m.altitude}m` : '';
+  const fh = m.jma
+    ? `<a class="flink" href="${jmaUrl(m)}" target="_blank" rel="noopener"
+         title="気象庁 天気予報（麓の${m.municipality||'市町村'}）">麓の天気 ↗</a>` : '';
+  return `<td class="name"><a class="mname" href="${url}" target="_blank" rel="noopener"
+    title="てんきとくらすで今日の天気を見る">${m.name||m.code}</a><span class="msub">${alt}${m.error?' 取得失敗':''}</span>${fh}</td>`;
+}
+function tempText(d){
+  if(d.temp_max!==null && d.temp_min!==null && d.temp_max!==d.temp_min)
+    return `${Math.round(d.temp_max)}/${Math.round(d.temp_min)}`;
+  return tempLabel(d.temp_max);
+}
+// 上段（今日・明日）：6・9・12・15時の4マーク。時刻は見出し側の目盛りに並ぶ。
+// 夕方以降はてんきとくらすが過ぎた時間を落とすので、4つとも無い日は従来どおり1マークに戻す。
+function hourCell(m, c, d, url){
+  const hrs = d.hours || {};
+  const inner = HOURS.some(([h])=>hrs[h])
+    ? '<span class="hrs">' + HOURS.map(([h]) =>
+        `<span class="hr" title="${m.name||m.code} ${c} ${+h}時${hrs[h]?'':'（発表なし）'}">${badge(hrs[h])}</span>`
+      ).join('') + '</span>'
+    : badge(d.index);
+  return `<td class="cell"><a href="${url}" target="_blank" rel="noopener"
+    title="てんきとくらす：${m.name||m.code}の${c}の天気">${inner}<span class="tmp">${tempText(d)}</span></a></td>`;
+}
+// 下段（明後日以降）：週間予報の1マーク＝日中6-15時の最悪値
+function dayCell(m, c, d, url){
+  return `<td class="cell"><a href="${url}" target="_blank" rel="noopener"
+    title="てんきとくらす：${m.name||m.code}の${c}の天気">${badge(d.index)}<span class="tmp">${tempText(d)}</span></a></td>`;
+}
+
 function render(){
   const cols = columns();
-  const head = $('head');
-  const labels = ['今日','明日','明後日','3日後','4日後','5日後','6日後','7日後'];
-  head.innerHTML = '<th class="name">山</th>' + cols.map((c,i)=>
-    `<th class="${i<2?'dw':'dn'}${i===0?' today':''}">${labels[i]||''}<br><span style="font-weight:400">${c.replace(/\(.\)/,'')}</span></th>`
+  const top = cols.slice(0,2), bot = cols.slice(2);
+
+  // 上段の見出し：今日/明日＋時刻の目盛り（アイコンと同じ28px幅で並べる）
+  const hasHours = c => (data.mountains||[]).some(m=>{
+    const d = (m.days||[]).find(x=>x.date===c);
+    return d && HOURS.some(([h])=>(d.hours||{})[h]);
+  });
+  $('headTop').innerHTML = '<th class="name">山</th>' + top.map((c,i)=>
+    `<th class="dw${i===0?' today':''}">${LABELS[i]}<span class="hd">${cleanDate(c)}</span>${
+      hasHours(c) ? '<span class="ticks">' + HOURS.map(([,lbl])=>`<i>${lbl}</i>`).join('') + '</span>' : ''
+    }</th>`
+  ).join('');
+  // 下段の見出し：明後日以降
+  $('headBot').innerHTML = '<th class="name">山</th>' + bot.map((c,i)=>
+    `<th class="dn">${LABELS[i+2]||''}<span class="hd">${cleanDate(c)}</span></th>`
   ).join('');
 
   let ms = (data?.mountains || []).slice();
@@ -191,47 +247,37 @@ function render(){
       return (RANK[bi]||0) - (RANK[ai]||0);
     });
   }
-  const body = $('body');
   if(!ms.length){
-    body.innerHTML = '<tr><td colspan="9" class="empty">データがありません。「更新」を押してください。</td></tr>';
+    $('bodyTop').innerHTML = '<tr><td colspan="3" class="empty">データがありません。「更新」を押してください。</td></tr>';
+    $('bodyBot').innerHTML = '<tr><td colspan="7" class="empty">—</td></tr>';
     return;
   }
-  body.innerHTML = ms.map(m=>{
-    const byDate = {};
-    (m.days||[]).forEach(d=>{ byDate[d.date]=d });
-    const url = tenkuraUrl(m);
-    const cells = cols.map(c=>{
-      const d = byDate[c];
+  const byDateOf = m => { const o = {}; (m.days||[]).forEach(d=>{ o[d.date] = d }); return o; };
+
+  $('bodyTop').innerHTML = ms.map(m=>{
+    const by = byDateOf(m), url = tenkuraUrl(m);
+    const cells = top.map(c=>{
+      const d = by[c];
       if(m.error || !d) return '<td>—</td>';
-      const t = d.temp_max!==null && d.temp_min!==null && d.temp_max!==d.temp_min
-        ? `${Math.round(d.temp_max)}/${Math.round(d.temp_min)}` : tempLabel(d.temp_max);
-      // 時間別の指数が入っている日＝今日と明日。ここは6・9・12・15時を横1列に出す。
-      // 明後日以降は週間予報（日中6-15時の最悪値）なので、そのまま1マーク。
-      // 今日の15時以降はてんきとくらすが過ぎた時間を落とすため、4つとも無い日は従来どおり1マークに戻す。
-      const hrs = d.hours || {};
-      const hourly = HOURS.some(([h])=>hrs[h]);
-      const inner = hourly
-        ? '<span class="hrs">' + HOURS.map(([h,lbl]) =>
-            `<span class="hr" title="${m.name||m.code} ${c} ${lbl}時${hrs[h]?'':'（発表なし）'}">`
-            + `<span class="hl">${lbl}</span>${badge(hrs[h])}</span>`).join('') + '</span>'
-        : badge(d.index);
-      return `<td class="cell${hourly?' wide':''}"><a href="${url}" target="_blank" rel="noopener"
-        title="てんきとくらす：${m.name||m.code}の${c}の天気">${inner}<span class="tmp">${t}</span></a></td>`;
+      return hourCell(m, c, d, url);
     }).join('');
-    const alt = m.altitude ? `${m.altitude}m` : '';
-    // 麓の市町村 → 気象庁のその町の予報（行の中の別リンク）
-    const fh = m.jma
-      ? `<a class="flink" href="${jmaUrl(m)}" target="_blank" rel="noopener"
-           title="気象庁 天気予報（麓の${m.municipality||'市町村'}）">麓の天気 ↗</a>` : '';
-    return `<tr class="${m.error?'err':''}">
-      <td class="name"><a class="mname" href="${url}" target="_blank" rel="noopener"
-        title="てんきとくらすで今日の天気を見る">${m.name||m.code}</a><span class="msub">${alt}${m.error?' 取得失敗':''}</span>${fh}</td>
-      ${cells}</tr>`;
+    return `<tr class="${m.error?'err':''}">${nameCell(m,url)}${cells}</tr>`;
+  }).join('');
+
+  $('bodyBot').innerHTML = ms.map(m=>{
+    const by = byDateOf(m), url = tenkuraUrl(m);
+    const cells = bot.map(c=>{
+      const d = by[c];
+      if(m.error || !d) return '<td>—</td>';
+      return dayCell(m, c, d, url);
+    }).join('');
+    return `<tr class="${m.error?'err':''}">${nameCell(m,url)}${cells}</tr>`;
   }).join('');
 }
 
 async function fetchData(){
-  $('body').innerHTML = '<tr><td class="spin">読み込み中…</td></tr>';
+  $('bodyTop').innerHTML = '<tr><td class="spin">読み込み中…</td></tr>';
+  $('bodyBot').innerHTML = '';
   try{
     // 静的版: 生成済みの data.json を読む（サーバー不要）
     const r = await fetch('data.json?t='+Date.now(), {cache:'no-store'});
@@ -239,7 +285,7 @@ async function fetchData(){
     $('updated').textContent = '更新 ' + fmtT(data.at);
     render();
   }catch(e){
-    $('body').innerHTML = `<tr><td class="spin">読み込み失敗: ${e}</td></tr>`;
+    $('bodyTop').innerHTML = `<tr><td class="spin">読み込み失敗: ${e}</td></tr>`;
   }
 }
 
